@@ -1,0 +1,10 @@
+{
+  "name": "Kanji Flashcards",
+  "short_name": "Kanji Flashcards",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f5f5f7",
+  "theme_color": "#007aff",
+  "orientation": "portrait",
+  "description": "KANJIDAMAGE kanji flashcards with randomized number ranges."
+}
