@@ -1,22 +1,26 @@
-# Kanji Flashcards — GitHub Pages / iPhone
+KANJI FLASHCARDS — GITHUB PAGES
 
-This is a Progressive Web App (PWA) designed for Safari on iPhone.
+This version loads the full KANJIDAMAGE kanji listing automatically when online.
+The current KANJIDAMAGE sequence contains about 1,760 main kanji entries; later
+numbers on the site include radicals, symbols, and other appendix material.
 
-## Range selection
-Enter a first and last KANJIDAMAGE listing number, for example:
-- First 1, Last 20 → randomizes the actual kanji entries numbered 1–20 on KANJIDAMAGE
-- First 101, Last 200 → randomizes the actual kanji entries numbered 101–200
-- First 1, Last 1760 → covers the numbered kanji portion currently visible on the site
+FEATURES
+- First/Last KANJIDAMAGE number range
+- Randomized cards within the exact site-number range
+- Kanji -> Meaning and Meaning -> Kanji
+- Previous / Next and Show Answer
+- Automatic download and local caching of the full listing
+- 434-card embedded fallback for offline first launch
+- PWA / Add to Home Screen support
 
-KANJIDAMAGE also has numbered rows that are images/radicals rather than kanji. Those rows keep their website numbers but are skipped as flashcards. Therefore a numeric range can contain fewer flashcards than its width.
+GITHUB PAGES
+Upload the contents of this folder to the root of a GitHub repository.
+Settings -> Pages -> Deploy from a branch -> main -> / (root).
+Open the resulting HTTPS site in Safari and use Share -> Add to Home Screen.
 
-## GitHub Pages
-Upload the contents of this folder to the root of a GitHub repository. The repository should contain index.html at the top level. In Settings → Pages, choose "Deploy from a branch", select the main branch and the root folder, then Save.
+IMPORTANT
+The first full-list download requires an internet connection. Once downloaded,
+the list is stored in the browser's local storage and can be used offline.
 
-GitHub Pages publishes static HTML/CSS/JavaScript files. A project site normally appears at:
-https://YOUR-USERNAME.github.io/YOUR-REPOSITORY/
-
-## Install on iPhone
-Open the published HTTPS address in Safari, tap Share → Add to Home Screen, then open the new icon.
-
-The app can cache its interface for offline use. Updating the KANJIDAMAGE list requires internet access.
+SOURCE
+https://www.kanjidamage.com/kanji

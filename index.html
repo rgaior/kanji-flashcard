@@ -47,6 +47,7 @@ const FALLBACK = [{"number":1,"kanji":"一","meaning":"one (line radical)"},{"nu
 const CACHE_KEY='kanjiDamageFlashcards.v1';
 const REMOTE='https://r.jina.ai/https://www.kanjidamage.com/kanji';
 let all=[], set=[], pos=0;
+const MAIN_KD_MAX=1760;
 const $=id=>document.getElementById(id);
 function clean(s){return s.replace(/!\[[^\]]*\]\([^)]*\)/g,'').replace(/\[([^\]]+)\]\([^)]*\)/g,'$1').replace(/[*_`]/g,'').replace(/&nbsp;/g,' ').trim()}
 function parseRemote(text){
@@ -72,7 +73,7 @@ function loadCache(){try{const x=JSON.parse(localStorage.getItem(CACHE_KEY)||'nu
 function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
 function getRange(){
   let first=Math.floor(Number($('first').value)||1);
-  let last=Math.floor(Number($('last').value)||all.length);
+  let last=Math.floor(Number($('last').value)||MAIN_KD_MAX);
   const maxNumber=all.reduce((m,x)=>Math.max(m,x.number||0),0)||all.length;
   first=Math.max(1,Math.min(first,maxNumber));
   last=Math.max(1,Math.min(last,maxNumber));
@@ -83,17 +84,17 @@ function getRange(){
 function makeSet(){
   if(!all.length)return;
   const [first,last]=getRange();
-  const inRange=all.filter(x=>x.number>=first && x.number<=last && x.kanji);
+  const inRange=all.filter(x=>x.number>=first && x.number<=last && x.kanji && /[\u3400-\u9fff\uF900-\uFAFF]/.test(x.kanji));
   set=shuffle(inRange);
   pos=0;
   render();
-  $('status').textContent=`Randomized ${set.length} flashcards from KANJIDAMAGE numbers ${first}–${last}`;
+  $('status').textContent=`Randomized ${set.length} kanji from KANJIDAMAGE numbers ${first}–${last}`;
 }
 function render(){if(!set.length)return;const x=set[pos], mode=$('mode').value; $('counter').textContent=`${pos+1} of ${set.length}`; $('promptLabel').textContent=mode==='km'?'What does this kanji mean?':'Which kanji matches this meaning?'; $('prompt').textContent=mode==='km'?x.kanji:x.meaning; $('answer').textContent=mode==='km'?x.meaning:x.kanji; $('answer').classList.remove('show'); $('show').textContent='Show Answer'; $('prev').disabled=pos===0; $('next').disabled=pos===set.length-1;}
-async function refresh(){ $('status').textContent='Updating from KANJIDAMAGE…'; try{const r=await fetch(REMOTE,{cache:'no-store'}); if(!r.ok) throw new Error('HTTP '+r.status); const text=await r.text(); const parsed=parseRemote(text); if(parsed.length<500) throw new Error('Could not read the full listing'); all=parsed; save(); $('status').textContent=`${all.filter(x=>x.kanji).length.toLocaleString()} kanji entries loaded (site numbers through ${all.reduce((m,x)=>Math.max(m,x.number||0),0).toLocaleString()})`; makeSet();}catch(e){if(!all.length){all=FALLBACK; $('status').textContent=`Using saved starter set: ${all.length} kanji. Tap Update when online.`;makeSet()}else $('status').textContent=`Using saved list: ${all.length.toLocaleString()} kanji. Update unavailable right now.`;}}
+async function refresh(){ $('status').textContent='Updating from KANJIDAMAGE…'; try{const r=await fetch(REMOTE,{cache:'no-store'}); if(!r.ok) throw new Error('HTTP '+r.status); const text=await r.text(); const parsed=parseRemote(text); if(parsed.length<500) throw new Error('Could not read the full listing'); all=parsed; save(); const kanjiCount=all.filter(x=>x.kanji && /[\u3400-\u9fff\uF900-\uFAFF]/.test(x.kanji)).length; const maxKanjiNumber=all.filter(x=>x.kanji && /[\u3400-\u9fff\uF900-\uFAFF]/.test(x.kanji)).reduce((m,x)=>Math.max(m,x.number||0),0); $('last').value=Math.max(Number($('last').value)||0,maxKanjiNumber); $('status').textContent=`${kanjiCount.toLocaleString()} kanji loaded from KANJIDAMAGE (through #${maxKanjiNumber})`; makeSet();}catch(e){if(!all.length){all=FALLBACK; $('status').textContent=`Using saved starter set: ${all.length} kanji. Tap Update when online.`;makeSet()}else $('status').textContent=`Using saved list: ${all.length.toLocaleString()} kanji. Update unavailable right now.`;}}
 $('show').onclick=()=>{$('answer').classList.toggle('show');$('show').textContent=$('answer').classList.contains('show')?'Hide Answer':'Show Answer'};
 $('next').onclick=()=>{if(pos<set.length-1){pos++;render()}}; $('prev').onclick=()=>{if(pos>0){pos--;render()}};
 $('newSet').onclick=makeSet; $('first').onchange=makeSet; $('last').onchange=makeSet; $('mode').onchange=render; $('refresh').onclick=refresh;
-if(!loadCache()){all=FALLBACK; $('status').textContent=`${all.length} starter kanji ready`; makeSet(); refresh();} else {$('status').textContent=`${all.filter(x=>x.kanji).length.toLocaleString()} saved kanji entries ready`; makeSet();}
+if(!loadCache()){all=FALLBACK; $('first').value=1; $('last').value=1760; $('status').textContent=`${FALLBACK.length} offline fallback kanji ready — loading full KANJIDAMAGE list…`; makeSet(); refresh();} else {const cachedKanji=all.filter(x=>x.kanji && /[\u3400-\u9fff\uF900-\uFAFF]/.test(x.kanji)); $('last').value=Math.max(Number($('last').value)||0,cachedKanji.reduce((m,x)=>Math.max(m,x.number||0),0),MAIN_KD_MAX); $('status').textContent=`${cachedKanji.length.toLocaleString()} saved kanji ready`; makeSet(); if(cachedKanji.length<1500) refresh();}
 if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').catch(()=>{});}
 </script></body></html>
