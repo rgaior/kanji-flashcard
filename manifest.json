@@ -1,10 +1,14 @@
 {
   "name": "Kanji Flashcards",
   "short_name": "Kanji Flashcards",
-  "start_url": "./index.html",
+  "start_url": "./",
+  "scope": "./",
   "display": "standalone",
   "background_color": "#f5f5f7",
   "theme_color": "#007aff",
   "orientation": "portrait",
-  "description": "KANJIDAMAGE kanji flashcards with randomized number ranges."
+  "description": "KANJIDAMAGE kanji flashcards with randomized number ranges.",
+  "icons": [
+    {"src":"apple-touch-icon.png","sizes":"180x180","type":"image/png","purpose":"any maskable"}
+  ]
 }
