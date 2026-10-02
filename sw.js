@@ -1,5 +1,5 @@
-const CACHE="kanji-flashcards-v3";
-const ASSETS=["./","./index.html","./manifest.json"];
+const CACHE="kanji-flashcards-v4";
+const ASSETS=["./","./index.html","./kanji-data.js","./manifest.json"];
 self.addEventListener("install",e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS))));
 self.addEventListener("activate",e=>e.waitUntil(self.clients.claim()));
 self.addEventListener("fetch",e=>{
