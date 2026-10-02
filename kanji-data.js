@@ -1637,7 +1637,11 @@ const kanjiData = [
   { kanji: '拝', meaning: 'worship' },
   { kanji: '互', meaning: 'reciprocal' },
   { kanji: '麗', meaning: 'gorgeous' }
-];
+].map((entry, index) => ({ ...entry, number: index + 1 }));
+
+if (typeof window !== 'undefined') {
+  window.KANJI_DATA = kanjiData;
+}
 
 // Export for Node.js
 if (typeof module !== 'undefined' && module.exports) {
